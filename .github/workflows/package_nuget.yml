@@ -26,5 +26,5 @@ jobs:
         working-directory: ./Bank
 
       - name: Publicar paquete NuGet
-        run: dotnet nuget push out/*.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push out/*.nupkg --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --api-key ${{ secrets.GITHUB_TOKEN }}
         working-directory: ./Bank
