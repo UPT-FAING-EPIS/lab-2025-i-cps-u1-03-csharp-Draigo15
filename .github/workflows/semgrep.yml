@@ -18,7 +18,7 @@ jobs:
           semgrep scan --config="p/default" --json --output semgrep.json
 
       - name: Generar reporte HTML con prospector-html
-        run: prospector-html --input semgrep.json --output semgrep-report.html --filter semgrep
+        run: prospector-html --input semgrep.json --output semgrep-report.html --filter semgrep || true
 
       - name: Upload SARIF result
         uses: github/codeql-action/upload-sarif@v3
