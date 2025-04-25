@@ -1,0 +1,30 @@
+name: Package NuGet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Run tests
+        run: dotnet test Bank.sln
+        working-directory: ./Bank
+
+      - name: Crear paquete NuGet
+        run: dotnet pack ./Bank.WebApi/Bank.WebApi.csproj -c Release -o out
+        working-directory: ./Bank
+
+      - name: Publicar paquete NuGet
+        run: dotnet nuget push out/*.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./Bank

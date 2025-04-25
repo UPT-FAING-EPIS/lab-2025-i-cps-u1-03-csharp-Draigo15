@@ -1,0 +1,31 @@
+name: Release Version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build project
+        run: dotnet build Bank.sln --configuration Release
+        working-directory: ./Bank
+
+      - name: Pack project
+        run: dotnet pack ./Bank.WebApi/Bank.WebApi.csproj -c Release -o out
+        working-directory: ./Bank
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Version 1.0.${{ github.run_number }}
+          files: ./Bank/out/*.nupkg
