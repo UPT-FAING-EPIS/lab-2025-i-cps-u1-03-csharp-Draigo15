@@ -1,0 +1,27 @@
+name: Semgrep Analysis
+env:
+  DOTNET_VERSION: '8.x'
+on: push
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar prospector-html
+        run: pip install prospector2html
+
+      - name: Semgrep scan
+        run: |
+          semgrep scan --config="p/default" --sarif --output=report.sarif --metrics=off
+          semgrep scan --config="p/default" --json --output semgrep.json
+
+      - name: Generar reporte HTML con prospector-html
+        run: prospector-html --input semgrep.json --output semgrep-report.html --filter semgrep
+
+      - name: Upload SARIF result
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: report.sarif
