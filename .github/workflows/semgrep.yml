@@ -1,17 +1,16 @@
 name: Semgrep Analysis
-env:
-  DOTNET_VERSION: '8.x'
 on: push
 jobs:
   security:
     runs-on: ubuntu-latest
-    container:
-      image: semgrep/semgrep
     steps:
       - uses: actions/checkout@v4
 
-      - name: Instalar prospector-html
-        run: pip install prospector2html
+      - name: Instalar Python, pip, Semgrep y prospector-html
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip
+          pip3 install semgrep prospector2html
 
       - name: Semgrep scan
         run: |
